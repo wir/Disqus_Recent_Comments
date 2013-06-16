@@ -1,24 +1,91 @@
-Disqus_Recent_Comments
-======================
+=== Disqus Recent Comments Widget ===
 
-Pulls your site's recent Disqus comments.
+Contributors: deusmachinellc, aaronwhite
 
-Using the Script
-----------------
+Tags: disqus, comments, widget, sidebar
 
-This script should work on any server running PHP v5+. I haven't tested it on PHPv4, but I wouldn't be surprised if it worked on that as well. I think the script works best if it functions as it's own php page and has it's contents embedded via a php include, iframe, or ajax call. If you look at the echoComments you'll notice that all of the elements in the commentHtml string have a css class. This should make it easy for you to customize the look and feel of your recent comments.
+Requires at least: 3.4.1
 
-Adding Your Parameters
-----------------------
+Tested up to: 3.5.1
 
-- **publicKey**: Your public Disqus api key.
-- **forumName**: Forum name Disqus identifies your site by.
-- **commentLimit**: Max amount of recent comments you want to fetch.
-- **filterUsers**: A comma delimited list of *author names* whose comments you do not want to show in the recent comment list. No spaces before or after the commas.  $filterUsers = "One Name,Two Name" not $filterUsers = "One Name, SpaceBefore Name". **Note:** Author names are different from usernames in Disqus. The author name is what shows up when someone makes a comment.
-- **filterLimit**: If filterUsers is used this is the numer of comments we ask the Disqus API to send back. By default the number zero is 3 times your comment limit
-- **dateFormat**: Format you want to use for comment post dates. Check php manual for formatting options.
-- **useRelativeTime**: If set to true the script will ignore the dateFormat parameter and use relative times like "one hour ago"
-- **commentLength**: Max character count of comments
-- **apiVersion**: Version of Disqus api
-- **resource**: Disqus resource to grad data from. Probably want to leave this alone.
-- **outputType**: Format of response from Disqus. You'll have to change script if you want to use xml.
+Stable tag: 1.0
+
+License: GPLv2 or later
+
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+
+
+Creates a configurable widget that will display the latest Disqus comments from your site.
+
+
+
+== Installation ==
+
+
+1. Unzip the ZIP file and drop the 'disqus-recent-comments' folder into your 'wp-content/plugins/' folder.
+
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+
+3. Enter your short name and api key in the settings page.
+
+4. If you're having trouble configuring the settings, please see http://deusmachine.com/disqus-instructions.php
+
+
+
+== Frequently Asked Questions ==
+
+
+
+= Why did the comments stop appearing? =
+
+
+
+Disqus caps the number of requests you can make to their api at 1000 an hour for free accounts.  Comments will start appearing again next hour.
+
+
+
+= I blocked a user, but their comments are still appearing, what gives? =
+
+
+
+Make sure you entered the exact author name.  The plugin does its best to account for spaces, capitalization, etc but it can't read your mind.  If all else fails, copy/paste their name into the filtered users field.
+
+
+
+= I can't figure out this API key stuff, help? =
+
+
+
+Please see this guide: http://deusmachine.com/disqus-instructions.php
+
+= I found a bug or I have an idea for a new feature =
+
+Fork the project and send us a pull request!  We'll be happy to give you a shout out in the release notes.
+https://github.com/andrewbartel/Disqus_Recent_Comments
+
+If you're not a developer, you can always drop us a line in the support forums and we'll do our best to integrate your requests into the next version or tackle the bug you found.
+
+= Where can I find the original version of the script that this project was based on? =
+
+You can view the original blog post on Aaron's site: http://www.aaronjwhite.org/index.php/14-web-development/php/11-updated-recent-comments-widget-in-php-for-disquss-api
+Or, you can check out the script on github: https://github.com/AaronJWhite/Disqus_Recent_Comments
+
+
+
+== Screenshots ==
+
+
+1. The Settings Page
+
+
+2. Adding the widget to a sidebar
+
+
+
+== Changelog ==
+
+
+= 1.0 =
+
+* Initial build

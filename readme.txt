@@ -40,6 +40,7 @@ Creates a configurable widget that will display the latest Disqus comments from 
 = Why did the comments stop appearing? =
 
 
+
 Disqus caps the number of requests you can make to their api at 1000 an hour for free accounts.  Comments will start appearing again next hour.
 
 
@@ -57,6 +58,18 @@ Make sure you entered the exact author name.  The plugin does its best to accoun
 
 
 Please see this guide: http://deusmachine.com/disqus-instructions.php
+
+= I found a bug or I have an idea for a new feature =
+
+Fork the project and send us a pull request!  We'll be happy to give you a shout out in the release notes.
+https://github.com/andrewbartel/Disqus_Recent_Comments
+
+If you're not a developer, you can always drop us a line in the support forums and we'll do our best to integrate your requests into the next version or tackle the bug you found.
+
+= Where can I find the original version of the script that this project was based on? =
+
+You can view the original blog post on Aaron's site: http://www.aaronjwhite.org/index.php/14-web-development/php/11-updated-recent-comments-widget-in-php-for-disquss-api
+Or, you can check out the script on github: https://github.com/AaronJWhite/Disqus_Recent_Comments
 
 
 
