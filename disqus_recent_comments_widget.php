@@ -13,7 +13,7 @@
 class disqus_recent_comments_widget extends WP_Widget {
 
 	public function __construct() {
-		$widget_ops = array( 'classname' => 'deus_disqus_recent_comments_widget', 'description' => __( 'Display Recent Posts From Disqus' , 'disqus_rcw' ) );
+		$widget_ops = array( 'classname' => 'disqus_recent_comments_widget_wrapper', 'description' => __( 'Display Recent Posts From Disqus' , 'disqus_rcw' ) );
 		$control_ops = array( 'width' => 300, 'height' => 230 );
 		parent::__construct( 'disqus_recent_comments', __( 'Disqus Recent Comments' , 'disqus_rcw' ), $widget_ops, $control_ops);
 	}
@@ -27,14 +27,14 @@ class disqus_recent_comments_widget extends WP_Widget {
 			$comment_limit = $instance['comment_limit'];
 			if(!$comment_limit) $comment_limit = 5;
 
-			//comma delimited list  of author names."John Doe,Aaron J. White,third" (Not Usernames)
+			//comma delimited list of author names."John Doe,Aaron J. White,third" (Not Usernames)
 			$filter_users = $instance['filter_users'];
 
 			$date_format = get_option( 'disqus_rcw_date_format' );
 			if(!$date_format) $date_format = 'n/j/Y';
 
 			$title_wrapper = get_option( 'disqus_rcw_title_wrapper' );
-			if(!$title_wrapper) $title_wrapper = '<h4 class="widgettitle">{title}</h4>';
+			if(!$title_wrapper) $title_wrapper = '{title}';
 
 			$markup_style = get_option( 'disqus_rcw_which_markup' );
 			if(!$markup_style) $markup_style = 'classic';
@@ -206,16 +206,14 @@ class disqus_recent_comments_widget extends WP_Widget {
 		$filtered_users = explode(",",$style_params["filter_users"]);
 		//create html string
 		$recent_comments = $before_widget;
-		$recent_comments .= $before_title;
 
 		if($style_params['markup_style'] == 'classic') {
-			$recent_comments .= '<div id="disqus_rcw_title">';
+			$recent_comments .= '<div id="disqus_rcw_title">'.$before_title.$title_wrapper_final.$after_title.'</div>';
 		} elseif($style_params['markup_style'] == 'html5') {
-			$recent_comments .= '<aside id="disqus_rcw_title" class="widget"><ul class="disqus_rcw_comments_list">';
+			$recent_comments .= '<aside id="disqus_rcw_title" class="widget">';
+			$recent_comments .= $before_title.$title_wrapper_final.$after_title;
+			$recent_comments .= '<ul class="disqus_rcw_comments_list">';
 		}
-
-		$recent_comments .= $title_wrapper_final;
-		$recent_comments .= $after_title;
 
 		do_action( 'disqus_rcw_before_comments_loop' );
 
@@ -277,16 +275,18 @@ class disqus_recent_comments_widget extends WP_Widget {
 					$comment_html = '
 					<li class="disqus_rcw_single">
 						<div class="disqus_rcw_author_wrapper">
+							<img class="disqus_rcw_avatar_html5" src="'.$author_avatar.'" alt="'.$author_name.'">
 							<a href="'.$author_profile.'">
-								<img class="disqus_rcw_avatar" src="'.$author_avatar.'" alt="'.$author_name.'">
 								<span class="disqus_rcw_author">'.$author_name.'</span>
 							</a>
 						</div>
+						<div class="disqus_rcw_clear"></div>
 						<div class="disqus_rcw_content_wrapper">
 							<a class="disqus_rcw_thread_title" href="'.$thread_link.'">'.$thread_title.'</a>
+							<br />
 							<a class="disqus_rcw_message" href="'.$thread_link.$comment_id.'">'.$message.'</a>
 						</div>
-						<time datetime="'.$post_time.'" class="disqus_rcw_post_time">'.$post_time.'</time>
+						<time datetime="'.$post_time.'" class="disqus_rcw_post_time_html5">'.$post_time.'</time>
 					</li>';
 				}
 				$recent_comments .= $comment_html;
@@ -299,7 +299,6 @@ class disqus_recent_comments_widget extends WP_Widget {
 		do_action( 'disqus_rcw_after_comments_loop');
 
 		if($style_params['markup_style'] == 'html5') $recent_comments .= '</ul></aside>';
-		elseif($style_params['markup_style'] == 'classic') $recent_comments .= '</div>';
 		$recent_comments .= $after_widget;
 
 		$recent_comments = apply_filters( 'disqus_rcw_recent_comments' , $recent_comments );
@@ -378,7 +377,7 @@ class disqus_rcw_settings {
 		else $this->date_format = 'n/j/Y';
 
 		if(get_option('disqus_rcw_title_wrapper')) $this->title_wrapper = get_option('disqus_rcw_title_wrapper');
-		else $this->title_wrapper = '<h4 class="widgettitle">{title}</h4>';
+		else $this->title_wrapper = '{title}';
 	}
 
 	public function enqueue_styles() {
