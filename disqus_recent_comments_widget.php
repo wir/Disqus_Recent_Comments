@@ -98,23 +98,23 @@ class disqus_recent_comments_widget extends WP_Widget {
 					}
 					else
 					{
-						$this->no_comments(true);
+						$this->no_comments( $style_params, $args, true );
 					}
 				}
 				else
 				{
-					$this->no_comments();
+					$this->no_comments( $style_params, $args, false );
 				}
 			}
 			else
 			{
-				$this->no_comments();
+				$this->no_comments( $style_params, $args, false );
 			}
 
 		}
 		catch(Exception $e)
 		{
-			$this->no_comments();
+			$this->no_comments( $style_params, $args, false );
 		}
 
 	}
@@ -172,10 +172,57 @@ class disqus_recent_comments_widget extends WP_Widget {
 		else return $base_url;
 	}
 
-	protected function no_comments( $comment = false ) {
-		echo '<div id="disqus_rcw_comment_wrap"><span id="disqus_rcw_no_comments">No Recent Comments Found</span>';
+	/*
+		Get the start of the widget and the title.
+	*/
+
+	protected function start( $style_params, $args = false ) {
+		$title = '';
+		// important
+		extract( $args );
+
+		$title_wrapper_final = str_replace( '{title}', $style_params[ 'title' ], $style_params[ 'title_wrapper' ] );
+
+		if ( $style_params[ 'markup_style' ] == 'classic'  ) {
+			$title .= '<div id="disqus_rcw_title">'.$before_title.$title_wrapper_final.$after_title.'</div>';
+		} elseif ( $style_params[ 'markup_style' ] == 'html5' ) {
+			$title .= '<aside id="disqus_rcw_title" class="widget">';
+			$title .= $before_title.$title_wrapper_final.$after_title;
+			$title .= '<ul class="disqus_rcw_comments_list">';
+		}
+
+		return $title;
+	}
+
+	/*
+		Get the end of the widget
+	*/
+	protected function end( $style_params ) {
+		$ends = '';
+
+		if( $style_params['markup_style'] == 'html5' ) 
+			$ends .= '</ul></aside>';
+
+		return $ends;
+	}
+
+	// Added arguments $style_params and $args for the start() method
+	protected function no_comments( $style_params, $args = false, $comment = false ) {
+		extract( $args );
+
+		$recent_comments = $before_widget;
+		
+		$recent_comments .= $this->start( $style_params, $args );
+		$recent_comments .= '<div id="disqus_rcw_comment_wrap"><span id="disqus_rcw_no_comments">No Recent Comments Found</span>';
+		
 		if( $comment === true ) echo '<!-- hourly limit reached -->';
-		echo '</div>';
+		
+		$recent_comments .= '</div>';
+		// in case HTML5 is chosen
+		$recent_comments .= $this->end( $style_params );
+
+		$recent_comments .= $after_widget;
+		echo $recent_comments;
 	}
 
 	protected function file_get_contents_curl( $url ) {
@@ -197,8 +244,6 @@ class disqus_recent_comments_widget extends WP_Widget {
 
 	protected function echo_comments($comment, $api_key, $style_params,$args=false) {
 
-		$title_wrapper_final = str_replace('{title}',$style_params['title'],$style_params['title_wrapper']);
-
 		extract($args);
 		//basic counter
 		$comment_counter = 0;
@@ -207,13 +252,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 		//create html string
 		$recent_comments = $before_widget;
 
-		if($style_params['markup_style'] == 'classic') {
-			$recent_comments .= '<div id="disqus_rcw_title">'.$before_title.$title_wrapper_final.$after_title.'</div>';
-		} elseif($style_params['markup_style'] == 'html5') {
-			$recent_comments .= '<aside id="disqus_rcw_title" class="widget">';
-			$recent_comments .= $before_title.$title_wrapper_final.$after_title;
-			$recent_comments .= '<ul class="disqus_rcw_comments_list">';
-		}
+		$recent_comments .= $this->start( $style_params, $args );
 
 		do_action( 'disqus_rcw_before_comments_loop' );
 
@@ -298,7 +337,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 
 		do_action( 'disqus_rcw_after_comments_loop');
 
-		if($style_params['markup_style'] == 'html5') $recent_comments .= '</ul></aside>';
+		$recent_comments .= $this->end( $style_params );
 		$recent_comments .= $after_widget;
 
 		$recent_comments = apply_filters( 'disqus_rcw_recent_comments' , $recent_comments );
