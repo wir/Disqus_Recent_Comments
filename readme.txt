@@ -1,5 +1,5 @@
 === Disqus Recent Comments Widget ===
-Contributors: DeusMachineLLC,aaron.white,Andrew Bartel
+Contributors: DeusMachineLLC,aaron.white,Andrew Bartel,RenettaRenula
 Tags: disqus, comments, widget, sidebar
 Requires at least: 3.4.1
 Tested up to: 3.6.1
