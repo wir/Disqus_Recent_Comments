@@ -2,11 +2,22 @@
 Contributors: DeusMachineLLC,aaron.white,Andrew Bartel,RenettaRenula
 Tags: disqus, comments, widget, sidebar
 Requires at least: 3.4.1
-Tested up to: 3.6.1
+Tested up to: 3.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Creates a configurable widget that will display the latest Disqus comments from your site.
+
+Disqus has dropped support for their recent comments widget.  This plugin ceates a configurable widget that will display your latest Disqus comments.
+
+== Description ==
+
+The Disqus Recent Comments Widget plugin will create a configurable widget that will allow you to display comments in any widgetized area of your theme like sidebars and footers.
+
+You can customize the comment length and date format, filter users and choose from three different markup templates, among other things.  The plugin has full support for custom markup defined with register_sidebars() and should integrate smoothly with most themes in the wp.org repository.
+
+We try to be very proactive and responsive with support.  So, if you have any issues, please post in the support forums and we'll do our best to resolve your issue promptly.
+
+You can follow development here: https://github.com/andrewbartel/Disqus_Recent_Comments
 
 == Installation ==
 
@@ -16,6 +27,10 @@ Creates a configurable widget that will display the latest Disqus comments from 
 4. If you're having trouble configuring the settings, please see http://deusmachine.com/disqus-instructions.php
 
 == Frequently Asked Questions ==
+
+= Hey what happened to the caching and custom layouts in this release? =
+
+Sorry, it was a really busy November and I wanted to push out a release that had bug fixes and a new layout at least.  I will get those added asap.
 
 = Why did the comments stop appearing? =
 
@@ -49,6 +64,14 @@ Not currently, but if you'd like to put together a translation for us, please do
 2. Adding the widget to a sidebar
 
 == Changelog ==
+
+= 1.1.1 =
+
+* Added RenettaRenula as a contributor
+* Plugin now properly displays the title when no comments are present
+* Plugin should now activate properly on multisite
+* Added a new layout, Tight Spacing
+* Rewrote the connection to the disqus api to speed up the comments retrieval
 
 = 1.1 =
 

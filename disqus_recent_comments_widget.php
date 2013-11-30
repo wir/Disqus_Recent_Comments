@@ -3,7 +3,7 @@
  * Plugin Name: Disqus Recent Comments Widget
  * Description: Add a widget to display recent comments from disqus
  * Author: Deus Machine LLC
- * Version: 1.1
+ * Version: 1.1.1
  * Author URI: http://deusmachine.com
  * Ported to WordPress by: Andrew Bartel, web developer for Deus Machine
  * Original Methodology and Script by: Aaron J. White http://aaronjwhite.org/
@@ -141,7 +141,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 		$dq_request = $this->add_query_str($dq_request, $dq_parameter);
 
 		// convert response to php object
-		$dq_response= $this->file_get_contents_curl($dq_request);
+		$dq_response = $this->file_get_contents_curl($dq_request);
 		if($dq_response !== false) {
 			$dq_response = @json_decode($dq_response, true);
 			$dq_thread = $dq_response["response"];
@@ -185,7 +185,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 
 		if ( $style_params[ 'markup_style' ] == 'classic'  ) {
 			$title .= '<div id="disqus_rcw_title">'.$before_title.$title_wrapper_final.$after_title.'</div>';
-		} elseif ( $style_params[ 'markup_style' ] == 'html5' ) {
+		} elseif ( $style_params[ 'markup_style' ] == 'html5' || $style_params['markup_style'] == 'nospacing' ) {
 			$title .= '<aside id="disqus_rcw_title" class="widget">';
 			$title .= $before_title.$title_wrapper_final.$after_title;
 			$title .= '<ul class="disqus_rcw_comments_list">';
@@ -200,7 +200,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 	protected function end( $style_params ) {
 		$ends = '';
 
-		if( $style_params['markup_style'] == 'html5' ) 
+		if( $style_params['markup_style'] == 'html5' || $style_params['markup_style'] == 'nospacing' ) 
 			$ends .= '</ul></aside>';
 
 		return $ends;
@@ -226,16 +226,15 @@ class disqus_recent_comments_widget extends WP_Widget {
 	}
 
 	protected function file_get_contents_curl( $url ) {
-		//Source: http://www.codeproject.com/Questions/171271/file_get_contents-url-failed-to-open-stream
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Set curl to return the data instead of printing it to the browser.
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);  // don't use cached ver. of url 
-		curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1); // seriously...don't use cached ver. of url
-		$data = curl_exec($ch);
-		curl_close($ch);
-		return $data;
+		
+		$ch = curl_init($url);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    curl_setopt($ch, CURLOPT_HEADER, 0);
+	    curl_setopt($ch, CURLOPT_USERAGENT, curl_UserAgent);
+	    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	    $data = curl_exec($ch);
+	    curl_close($ch);
+	    return $data;
 	}
 
 	public function disqus_rcw_trim(&$val) {
@@ -327,7 +326,20 @@ class disqus_recent_comments_widget extends WP_Widget {
 						</div>
 						<time datetime="'.$post_time.'" class="disqus_rcw_post_time_html5">'.$post_time.'</time>
 					</li>';
+				} elseif($style_params['markup_style'] == 'nospacing') {
+					$comment_html = '
+					<li class="disqus_rcw_single_nospacing">
+						<img class="disqus_rcw_avatar_html5" src="'.$author_avatar.'" alt="'.$author_name.'">
+						<a href="'.$author_profile.'">
+							<span class="disqus_rcw_author">'.$author_name.'</span>
+						</a>
+						said, "'.$message.'" about
+						<a class="disqus_rcw_thread_title" href="'.$thread_link.'">'.$thread_title.'</a>
+						<br />
+						on <time datetime="'.$post_time.'" class="disqus_rcw_post_time_nospacing">'.$post_time.'</time>
+					</li>';
 				}
+
 				$recent_comments .= $comment_html;
 				//stop loop when we reach limit
 				if($comment_counter == $style_params["comment_limit"]) break;
@@ -489,6 +501,7 @@ class disqus_rcw_settings {
 		echo '<select name="disqus_rcw_which_markup">';
 		echo '<option ' . selected( get_option( 'disqus_rcw_which_markup' ), 'classic' ) . 'value="classic">Classic 1.0</option>';
 		echo '<option ' . selected( get_option( 'disqus_rcw_which_markup' ), 'html5' ) . 'value="html5">HTML5</option>';
+		echo '<option ' . selected( get_option( 'disqus_rcw_which_markup' ), 'nospacing' ) . 'value="nospacing">Tight Spacing</option>';
 		echo '</select>';
 		echo '<br />';
 		echo '<div id="disqus_rcw_markup_example"></div>';

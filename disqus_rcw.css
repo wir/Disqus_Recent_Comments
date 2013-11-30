@@ -29,6 +29,10 @@
 	clear: both;
 }
 
+.disqus_rcw_single_nospacing {
+	margin-bottom: 15px;
+}
+
 /* Props to BramVanroy for the below css */
 .disqus_rcw_author_wrapper {
 	margin-bottom: 7px;
