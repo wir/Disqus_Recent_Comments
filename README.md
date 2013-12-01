@@ -1,11 +1,19 @@
 === Disqus Recent Comments Widget ===
+
 Contributors: DeusMachineLLC,aaron.white,Andrew Bartel,RenettaRenula
+
 Tags: disqus, comments, widget, sidebar
+
 Requires at least: 3.4.1
+
 Tested up to: 3.7.1
+
 Stable tag: trunk
+
 License: GPLv2 or later
+
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
 
 Disqus has dropped support for their recent comments widget.  This plugin ceates a configurable widget that will display your latest Disqus comments.
 
