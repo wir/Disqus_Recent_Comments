@@ -329,7 +329,7 @@ class disqus_recent_comments_widget extends WP_Widget {
 				} elseif($style_params['markup_style'] == 'nospacing') {
 					$comment_html = '
 					<li class="disqus_rcw_single_nospacing">
-						<img class="disqus_rcw_avatar_html5" src="'.$author_avatar.'" alt="'.$author_name.'">
+						<img class="disqus_rcw_avatar_nospacing" src="'.$author_avatar.'" alt="'.$author_name.'">
 						<a href="'.$author_profile.'">
 							<span class="disqus_rcw_author">'.$author_name.'</span>
 						</a>

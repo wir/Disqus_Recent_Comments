@@ -29,16 +29,12 @@
 	clear: both;
 }
 
-.disqus_rcw_single_nospacing {
-	margin-bottom: 15px;
-}
-
 /* Props to BramVanroy for the below css */
 .disqus_rcw_author_wrapper {
 	margin-bottom: 7px;
 }
 
-img.disqus_rcw_avatar_html5 {
+img.disqus_rcw_avatar_html5, img.disqus_rcw_avatar_nospacing {
 	float: left;
 	width: 35px;
 	margin-right: 7px;
@@ -62,4 +58,8 @@ ul.disqus_rcw_comments_list li {
 
 .disqus_rcw_message:hover {
 	text-decoration: underline;
+}
+
+.disqus_rcw_single_nospacing {
+	margin-bottom: 15px;
 }
