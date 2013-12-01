@@ -30,7 +30,7 @@ You can follow development here: https://github.com/andrewbartel/Disqus_Recent_C
 
 = Hey what happened to the caching and custom layouts in this release? =
 
-Sorry, it was a really busy November and I wanted to push out a release that had bug fixes and a new layout at least.  I will get those added asap.
+Sorry, it was a really busy November and I wanted to push out a release that had bug fixes and a new layout at least.  I will get those added asap.  I'm also going to try and get that shortcode added as well.
 
 = Why did the comments stop appearing? =
 
@@ -69,9 +69,9 @@ Not currently, but if you'd like to put together a translation for us, please do
 
 * Added RenettaRenula as a contributor
 * Plugin now properly displays the title when no comments are present
-* Plugin should now activate properly on multisite
+* Plugin should now activate properly on multisite (props to Army)
 * Added a new layout, Tight Spacing
-* Rewrote the connection to the disqus api to speed up the comments retrieval
+* Rewrote the connection to the disqus api to speed up the comment retrieval (props to theconsultant_)
 
 = 1.1 =
 
