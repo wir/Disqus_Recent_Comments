@@ -68,9 +68,9 @@ Not currently, but if you'd like to put together a translation for us, please do
 
 = 1.1.2 =
 
-* Removed references to CURL and replaces with the built-in wp_get_remote function.
-* Fixed bug where admin panel was no accessible by admin accounts. 
-* New filter 'disqus_rcw_recent_comment_format' for change the html markup of each comment
+* Removed references to CURL and replaced with the built-in wp_get_remote function.
+* Fixed bug where admin panel was not accessible by admin accounts. 
+* New filter 'disqus_rcw_recent_comment_format' for changing the html markup of each comment
 
 = 1.1.1 =
 
