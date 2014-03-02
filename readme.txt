@@ -1,8 +1,8 @@
 === Disqus Recent Comments Widget ===
-Contributors: DeusMachineLLC,aaron.white,Andrew Bartel,RenettaRenula
+Contributors: DeusMachineLLC,aaron.white,Andrew Bartel,RenettaRenula, spacedmonkey
 Tags: disqus, comments, widget, sidebar
 Requires at least: 3.4.1
-Tested up to: 3.7.1
+Tested up to: 3.8.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -64,6 +64,13 @@ Not currently, but if you'd like to put together a translation for us, please do
 2. Adding the widget to a sidebar
 
 == Changelog ==
+
+
+= 1.1.2 =
+
+* Removed references to CURL and replaced with the built-in wp_get_remote function.
+* Fixed bug where admin panel was not accessible by admin accounts. 
+* New filter 'disqus_rcw_recent_comment_format' for changing the html markup of each comment
 
 = 1.1.1 =
 

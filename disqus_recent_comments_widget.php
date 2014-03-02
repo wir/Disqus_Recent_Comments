@@ -3,7 +3,7 @@
  * Plugin Name: Disqus Recent Comments Widget
  * Description: Add a widget to display recent comments from disqus
  * Author: Deus Machine LLC
- * Version: 1.1
+ * Version: 1.1.2
  * Author URI: http://deusmachine.com
  * Ported to WordPress by: Andrew Bartel, web developer for Deus Machine
  * Original Methodology and Script by: Aaron J. White http://aaronjwhite.org/
@@ -227,14 +227,16 @@ class disqus_recent_comments_widget extends WP_Widget {
 
 	protected function file_get_contents_curl( $url ) {
 		
-		$ch = curl_init($url);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_HEADER, 0);
-	    curl_setopt($ch, CURLOPT_USERAGENT, curl_UserAgent);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-	    $data = curl_exec($ch);
-	    curl_close($ch);
-	    return $data;
+		// Use the build in WordPress CURL function
+		$request = wp_remote_get( $url, array( 'timeout' => 120, 'httpversion' => '1.1' ) );
+		
+		// If there is an error, return empty json.
+		if(is_wp_error($request)){
+			return '{}';
+		}
+		// Get response body
+		$data = wp_remote_retrieve_body($request);
+		return $data;
 	}
 
 	public function disqus_rcw_trim(&$val) {
@@ -290,55 +292,61 @@ class disqus_recent_comments_widget extends WP_Widget {
 					$style_params["comment_length"]
 				);
 
+				
 				if($style_params['markup_style'] == 'classic') {
 					//create comment html
-					$comment_html = '<div class="disqus_rcw_single_comment_wrapper">
+					$comment_html_format = '<div class="disqus_rcw_single_comment_wrapper">
 		                <div>
 		                  <div>
-		                    <img class="disqus_rcw_avatar" src="'.$author_avatar.'" alt="'.$author_name.'"/>
+		                    <img class="disqus_rcw_avatar" src="%1$s" alt="%2$s"/>
 		                    <div class="disqus_rcw_author_name">
-		                      <a href="'.$author_profile.'">'.$author_name.' - <span class="disqus_rcw_post_time">'.$post_time.'</span></a>
+		                      <a href="%3$s">%2$s - <span class="disqus_rcw_post_time">%4$s</span></a>
 		                    </div>
 		                  </div>
 		                  <div class="disqus_rcw_clear"></div>
 		                </div>
 		                <div>
-		                  <a class="disqus_rcw_thread_title" href="'.$thread_link.'">'.$thread_title.'</a>
+		                  <a class="disqus_rcw_thread_title" href="%5$s">%6$s</a>
 		                  <div class="disqus_rcw_comment_actual_wrapper">
-		                  	<a href="'.$thread_link.$comment_id.'">'.$message.'</a>
+		                  	<a href="%5$s%7$s">%8$s</a>
 		                  </div>
 		                </div>
 		              </div>';
 				} elseif($style_params['markup_style'] == 'html5') {
-					$comment_html = '
+					$comment_html_format = '
 					<li class="disqus_rcw_single">
 						<div class="disqus_rcw_author_wrapper">
-							<img class="disqus_rcw_avatar_html5" src="'.$author_avatar.'" alt="'.$author_name.'">
-							<a href="'.$author_profile.'">
-								<span class="disqus_rcw_author">'.$author_name.'</span>
+							<img class="disqus_rcw_avatar_html5" src="%1$s" alt="%2$s">
+							<a href="%3$s">
+								<span class="disqus_rcw_author">%2$s</span>
 							</a>
 						</div>
 						<div class="disqus_rcw_clear"></div>
 						<div class="disqus_rcw_content_wrapper">
-							<a class="disqus_rcw_thread_title" href="'.$thread_link.'">'.$thread_title.'</a>
+							<a class="disqus_rcw_thread_title" href="%5$s">%6$s</a>
 							<br />
-							<a class="disqus_rcw_message" href="'.$thread_link.$comment_id.'">'.$message.'</a>
+							<a class="disqus_rcw_message" href="%5$s%7$s">%8$s</a>
 						</div>
-						<time datetime="'.$post_time.'" class="disqus_rcw_post_time_html5">'.$post_time.'</time>
+						<time datetime="%4$s" class="disqus_rcw_post_time_html5">%4$s</time>
 					</li>';
-				} elseif($style_params['markup_style'] == 'nospacing') {
-					$comment_html = '
+				}elseif($style_params['markup_style'] == 'nospacing') {
+					$comment_html_format = '
 					<li class="disqus_rcw_single_nospacing">
-						<img class="disqus_rcw_avatar_nospacing" src="'.$author_avatar.'" alt="'.$author_name.'">
-						<a href="'.$author_profile.'">
-							<span class="disqus_rcw_author">'.$author_name.'</span>
+						<img class="disqus_rcw_avatar_nospacing" src="%1$s" alt="%2$s">
+						<a href="%3$s">
+							<span class="disqus_rcw_author">%2$s</span>
 						</a>
-						said, "'.$message.'" about
-						<a class="disqus_rcw_thread_title" href="'.$thread_link.'">'.$thread_title.'</a>
+						said, "%8$s" about
+						<a class="disqus_rcw_thread_title" href="%5$s">%5$s</a>
 						<br />
-						on <time datetime="'.$post_time.'" class="disqus_rcw_post_time_nospacing">'.$post_time.'</time>
+						on <time datetime="%4$s" class="disqus_rcw_post_time_nospacing">%4$s</time>
 					</li>';
 				}
+				
+				// Added new filter for the format / html of each comment
+				$comment_html_format = apply_filters( 'disqus_rcw_recent_comment_format' , $comment_html_format );
+				$comment_html = sprintf($comment_html_format, $author_avatar,$author_name,$author_profile,$post_time,$thread_link,$thread_title,$comment_id,$message);
+			
 
 				$recent_comments .= $comment_html;
 				//stop loop when we reach limit
@@ -402,8 +410,11 @@ function disqus_rcw_init() {
 add_action( 'widgets_init' , 'disqus_rcw_init' );
 
 function disqus_rcw_settings_link($links) {
-	$settings_link = '<a href="options-general.php?page=disqus_rcw.php">'.__('Settings').'</a>';
-	array_unshift($links, $settings_link);
+	// Only show settings link if you have access the panel
+	if ( current_user_can('manage_options') ) {
+		$settings_link = '<a href="'.admin_url('options-general.php?page=disqus_rcw').'">'.__('Settings').'</a>';
+		array_unshift($links, $settings_link);
+	}
 	return $links;
 }
 $disqus_rcw_basename = plugin_basename(__FILE__);
@@ -432,7 +443,7 @@ class disqus_rcw_settings {
 	}
 
 	public function enqueue_styles() {
-		wp_enqueue_style( 'disqus_rcw.css' , plugins_url().'/'.basename(dirname(__FILE__)).'/disqus_rcw.css' );
+		wp_enqueue_style( 'disqus_rcw' , plugins_url('disqus_rcw.css',__FILE__) );
 	}
 
 	public function install() {
@@ -449,7 +460,7 @@ class disqus_rcw_settings {
 
 		if (get_option( 'disqus_rcw_settings_do_activation_redirect' , false ) ) {
 			delete_option( 'disqus_rcw_settings_do_activation_redirect' );
-			wp_redirect( 'options-general.php?page=disqus_rcw' );
+			wp_redirect( admin_url('options-general.php?page=disqus_rcw') );
 		}
 	}
 
@@ -529,7 +540,7 @@ class disqus_rcw_settings {
 	}
 
 	public function disqus_rcw_add_settings_menu_page() {
-		add_options_page( 'Disqus Comments','Disqus Comments','update_plugins','disqus_rcw',array($this,'disqus_rcw_display_settings' ) );
+		add_options_page( 'Disqus Comments','Disqus Comments','manage_options','disqus_rcw',array($this,'disqus_rcw_display_settings' ) );
 	}
 
 }
